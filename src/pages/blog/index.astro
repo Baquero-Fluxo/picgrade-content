@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const dateFmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+---
+
+<BlogLayout
+  title="Blog do PicGrade — correção de provas e avaliação escolar"
+  description="Ideias práticas sobre correção de provas objetivas, elaboração de questões e avaliação da aprendizagem, para professores brasileiros."
+>
+  <section class="paper-grid" style="padding: 72px 24px 56px;">
+    <div style="max-width: 760px; margin: 0 auto;">
+      <p class="eyebrow" style="margin: 0 0 14px;">Para professores que corrigem provas</p>
+      <h1 style="font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 6vw, 52px); line-height: 1.05; margin: 0 0 18px; letter-spacing: -0.01em;">
+        Menos tempo corrigindo.<br />Mais tempo ensinando.
+      </h1>
+      <p style="color: var(--graphite); font-size: 17px; max-width: 52ch; margin: 0;">
+        Textos práticos sobre correção de provas objetivas, elaboração de questões e avaliação da aprendizagem.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding: 8px 24px 80px;">
+    <div style="max-width: 760px; margin: 0 auto;">
+      {posts.length === 0 && (
+        <p class="meta">Nenhum post publicado ainda.</p>
+      )}
+
+      {posts.map((post, i) => (
+        <>
+          <article style="padding: 32px 0;">
+            <a href={`/blog/${post.id}`} style="text-decoration: none; color: inherit; display: block;">
+              <span class="stamp">{post.data.category}</span>
+              <h2 style="font-family: var(--font-display); font-weight: 500; font-size: 27px; line-height: 1.2; margin: 14px 0 10px;">
+                {post.data.title}
+              </h2>
+              <p style="color: var(--graphite); font-size: 15px; margin: 0 0 10px; max-width: 60ch;">
+                {post.data.description}
+              </p>
+              <p class="meta" style="margin: 0;">
+                {dateFmt.format(post.data.date)} · {post.data.author}
+              </p>
+            </a>
+          </article>
+          {i < posts.length - 1 && <hr class="hairline" />}
+        </>
+      ))}
+    </div>
+  </section>
+</BlogLayout>

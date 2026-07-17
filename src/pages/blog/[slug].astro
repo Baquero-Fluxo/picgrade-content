@@ -1,0 +1,112 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const dateFmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+const wordCount = (post.body ?? '').trim().split(/\s+/).filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.round(wordCount / 200));
+---
+
+<BlogLayout title={`${post.data.title} — Blog do PicGrade`} description={post.data.description} image={post.data.image}>
+  <article style="padding: 56px 24px 40px;">
+    <div style="max-width: var(--measure); margin: 0 auto;">
+      <a href="/blog" class="eyebrow pen-link" style="text-decoration: none; display: inline-block; margin-bottom: 22px;">← Blog</a>
+
+      <span class="stamp">{post.data.category}</span>
+
+      <h1 style="font-family: var(--font-display); font-weight: 500; font-size: clamp(30px, 5vw, 42px); line-height: 1.1; margin: 18px 0 14px;">
+        {post.data.title}
+      </h1>
+
+      <p class="meta" style="margin: 0 0 40px;">
+        {dateFmt.format(post.data.date)} · {post.data.author} · {readingMinutes} min de leitura
+      </p>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <hr class="hairline" style="margin: 48px 0 28px;" />
+      <a href="/blog" class="pen-link" style="font-family: var(--font-mono); font-size: 13px; text-decoration: none;">← Voltar para o blog</a>
+    </div>
+  </article>
+</BlogLayout>
+
+<style>
+  .prose {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .prose > :first-child::first-letter {
+    font-family: var(--font-display);
+    font-size: 3.6em;
+    line-height: 0.85;
+    float: left;
+    padding: 6px 8px 0 0;
+    color: var(--pen);
+    font-weight: 500;
+  }
+
+  .prose h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 25px;
+    margin: 44px 0 16px;
+    color: var(--ink);
+  }
+
+  .prose p {
+    margin: 0 0 20px;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin: 0 0 20px;
+    padding-left: 22px;
+  }
+
+  .prose li {
+    margin-bottom: 8px;
+  }
+
+  .prose a {
+    color: var(--chalk);
+    text-decoration-color: var(--chalk-soft);
+  }
+
+  /* citações viram "anotação de margem" — o professor comentando no papel */
+  .prose blockquote {
+    margin: 32px 0;
+    padding: 4px 0 4px 18px;
+    border-left: 2.5px solid var(--pen);
+    color: var(--pen);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    transform: rotate(-0.4deg);
+  }
+
+  .prose blockquote p {
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .prose > :first-child::first-letter {
+      font-size: 2.8em;
+    }
+  }
+</style>
