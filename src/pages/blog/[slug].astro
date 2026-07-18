@@ -37,6 +37,40 @@ const readingMinutes = Math.max(1, Math.round(wordCount / 200));
         <Content />
       </div>
 
+      <script>
+        (function(){
+          const root = document.querySelector('.prose');
+          if(!root) return;
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+          const texts = [];
+          while(walker.nextNode()) texts.push(walker.currentNode);
+          const linkHref = 'https://picgrade.app';
+          const re = /\bpicgrade\b/gi;
+          texts.forEach(node => {
+            const text = node.nodeValue;
+            if(!re.test(text)) return;
+            re.lastIndex = 0;
+            const frag = document.createDocumentFragment();
+            let lastIndex = 0;
+            let m;
+            while((m = re.exec(text)) !== null){
+              const before = text.slice(lastIndex, m.index);
+              if(before) frag.appendChild(document.createTextNode(before));
+              const a = document.createElement('a');
+              a.href = linkHref;
+              a.className = 'in-article-link';
+              a.textContent = m[0];
+              frag.appendChild(a);
+              lastIndex = re.lastIndex;
+            }
+            const after = text.slice(lastIndex);
+            if(after) frag.appendChild(document.createTextNode(after));
+            node.parentNode.replaceChild(frag, node);
+          });
+        })();
+      </script>
+      </div>
+
       <hr class="hairline" style="margin: 48px 0 28px;" />
       <a href="/blog" class="pen-link" style="font-family: var(--font-mono); font-size: 13px; text-decoration: none;">← Voltar para o blog</a>
     </div>
@@ -83,6 +117,11 @@ const readingMinutes = Math.max(1, Math.round(wordCount / 200));
   }
 
   .prose a {
+    color: var(--chalk);
+    text-decoration-color: var(--chalk-soft);
+  }
+
+  .in-article-link {
     color: var(--chalk);
     text-decoration-color: var(--chalk-soft);
   }
