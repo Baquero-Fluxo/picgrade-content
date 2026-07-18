@@ -40,6 +40,30 @@ isso é intencional: evita categoria nova criada sem querer.
    Framework preset: Astro. Build command e output ficam automáticos.
 3. Anote a URL do deploy (ex: `picgrade-content.vercel.app`).
 
+## Estrutura de conteúdo
+
+Os artigos do blog ficam na pasta `Artigos/` na raiz do repositório. Para publicar um
+novo post, crie um arquivo Markdown em `Artigos/` com o frontmatter exigido pelo
+schema (`title`, `description`, `date`, `author`, `category`, `tags`, `draft`).
+
+Exemplo mínimo de frontmatter:
+
+```yaml
+---
+title: "Título do post"
+description: "Descrição para meta (até 160 chars)"
+date: 2026-07-18
+author: "Equipe PicGrade"
+category: "Correção de provas"
+tags: ["tag1", "tag2"]
+draft: false
+---
+```
+
+O processo de build do Astro já está configurado para ler `Artigos/` como fonte
+dos posts — após adicionar um novo arquivo, faça commit e push; em seguida o
+deploy no Vercel fará o build e publicará o post em `/blog/`.
+
 ## Conectar ao domínio principal (picgrade.app/blog)
 
 Isso é o que faz `picgrade.app/blog` mostrar este projeto sem precisar de
