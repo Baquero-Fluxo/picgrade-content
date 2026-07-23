@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://picgrade.app/sitemap-index.xml
