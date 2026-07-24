@@ -12,7 +12,7 @@ const CATEGORIES = [
 ] as const;
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.md', base: './Artigos' }),
   schema: z.object({
     title: z.string(),
     description: z.string().max(160, 'Mantenha a meta description até 160 caracteres para SEO.'),
