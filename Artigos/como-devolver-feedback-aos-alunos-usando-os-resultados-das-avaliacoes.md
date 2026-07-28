@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Avaliação da aprendizagem"
 tags: ["feedback", "avaliação", "aprendizagem", "avaliação formativa"]
+pillar: "avaliacao-formativa"
 draft: false
 ---
 

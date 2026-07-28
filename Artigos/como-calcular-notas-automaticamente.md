@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Correção de provas"
 tags: ["cálculo de notas", "correção automática", "produtividade docente", "PicGrade"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

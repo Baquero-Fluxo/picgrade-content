@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Tecnologia para professores"
 tags: ["correção automática", "tecnologia educacional", "produtividade docente", "PicGrade"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

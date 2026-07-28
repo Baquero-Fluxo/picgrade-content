@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Correção de provas"
 tags: ["correção de provas", "avaliação", "produtividade", "qualidade da avaliação"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

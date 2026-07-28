@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import remarkAutoLink from './src/remark-auto-link.mjs';
 
 // As páginas já vivem fisicamente sob /blog (src/pages/blog/*), e todos os
 // links internos são strings literais com /blog embutido — por isso NÃO
@@ -10,4 +11,7 @@ export default defineConfig({
   site: 'https://picgrade.app',
   trailingSlash: 'never',
   integrations: [sitemap()],
+  markdown: {
+    remarkPlugins: [remarkAutoLink],
+  },
 });

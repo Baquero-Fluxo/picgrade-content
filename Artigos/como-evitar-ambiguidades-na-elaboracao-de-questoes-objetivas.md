@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Elaboração de avaliações"
 tags: ["avaliação", "elaboração de provas", "múltipla escolha", "qualidade da avaliação"]
+pillar: "provas-objetivas"
 draft: false
 ---
 

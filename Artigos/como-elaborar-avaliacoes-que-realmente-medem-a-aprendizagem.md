@@ -5,6 +5,7 @@ date: 2026-07-25
 author: "Equipe PicGrade"
 category: "Elaboração de avaliações"
 tags: ["avaliação", "elaboração de provas", "aprendizagem", "professores"]
+pillar: "provas-objetivas"
 draft: false
 ---
 

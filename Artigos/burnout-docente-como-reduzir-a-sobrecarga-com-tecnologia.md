@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Tecnologia para professores"
 tags: ["burnout", "saúde mental", "professores", "tecnologia", "produtividade"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

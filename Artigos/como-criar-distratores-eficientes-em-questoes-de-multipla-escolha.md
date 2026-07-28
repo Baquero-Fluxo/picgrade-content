@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Elaboração de avaliações"
 tags: ["avaliação", "múltipla escolha", "distratores", "elaboração de provas"]
+pillar: "provas-objetivas"
 draft: false
 ---
 

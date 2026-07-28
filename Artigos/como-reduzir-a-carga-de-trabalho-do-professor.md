@@ -5,6 +5,7 @@ date: 2026-07-25
 author: "Equipe PicGrade"
 category: "Tecnologia para professores"
 tags: ["produtividade", "professores", "organização", "tecnologia educacional"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

@@ -5,6 +5,7 @@ date: 2026-07-25
 author: "Equipe PicGrade"
 category: "Tecnologia para professores"
 tags: ["saúde mental", "estresse", "professores", "produtividade"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

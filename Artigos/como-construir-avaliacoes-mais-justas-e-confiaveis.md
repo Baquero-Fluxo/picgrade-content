@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Elaboração de avaliações"
 tags: ["avaliação", "qualidade da avaliação", "elaboração de provas", "aprendizagem"]
+pillar: "avaliacao-escolar"
 draft: false
 ---
 

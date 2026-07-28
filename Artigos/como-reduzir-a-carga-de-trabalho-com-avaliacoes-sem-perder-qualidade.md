@@ -5,6 +5,7 @@ date: 2026-07-23
 author: "Equipe PicGrade"
 category: "Avaliação da aprendizagem"
 tags: ["avaliação", "produtividade", "trabalho docente", "tecnologia"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

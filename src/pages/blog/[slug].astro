@@ -11,18 +11,110 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 
 const dateFmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 const wordCount = (post.body ?? '').trim().split(/\s+/).filter(Boolean).length;
 const readingMinutes = Math.max(1, Math.round(wordCount / 200));
+
+const pillarPost = post.data.pillar
+  ? allPosts.find((p) => p.data.isPillar && p.id === post.data.pillar)
+  : null;
+
+const siblingPosts = post.data.pillar
+  ? allPosts
+      .filter((p) => p.data.pillar === post.data.pillar && p.id !== post.id)
+      .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+      .slice(0, 4)
+  : [];
+
+const canonicalURL = new URL(`/blog/${post.id}`, Astro.site).toString();
+const dateISO = post.data.date.toISOString();
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://picgrade.app' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://picgrade.app/blog' },
+    { '@type': 'ListItem', position: 3, name: post.data.category },
+    { '@type': 'ListItem', position: 4, name: post.data.title, item: canonicalURL },
+  ],
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: dateISO,
+  dateModified: dateISO,
+  author: { '@type': 'Organization', name: post.data.author },
+  publisher: { '@type': 'Organization', name: 'PicGrade' },
+  mainEntityOfPage: canonicalURL,
+};
+
+// Extrai perguntas/respostas de uma seção "## Perguntas frequentes" (quando existir)
+// apenas para gerar o FAQPage schema — o conteúdo visual já vem do próprio markdown.
+function extractFaq(markdown) {
+  const sectionMatch = markdown.match(/^##\s+Perguntas frequentes\s*$/im);
+  if (!sectionMatch) return [];
+  const startIdx = sectionMatch.index + sectionMatch[0].length;
+  const rest = markdown.slice(startIdx);
+  const endMatch = rest.match(/^##?\s+\S/m);
+  const sectionBody = endMatch ? rest.slice(0, endMatch.index) : rest;
+
+  const pairs = [];
+  const qaRegex = /\*\*(.+?)\*\*\s*\n+([\s\S]*?)(?=\n\*\*.+?\*\*|$)/g;
+  let m;
+  while ((m = qaRegex.exec(sectionBody)) !== null) {
+    const question = m[1].trim();
+    const answer = m[2]
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l && l !== '---')
+      .join(' ')
+      .trim();
+    if (question && answer) pairs.push({ question, answer });
+  }
+  return pairs;
+}
+
+const faqPairs = extractFaq(post.body ?? '');
+const faqSchema = faqPairs.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqPairs.map((p) => ({
+        '@type': 'Question',
+        name: p.question,
+        acceptedAnswer: { '@type': 'Answer', text: p.answer },
+      })),
+    }
+  : null;
+
+const toc = headings.filter((h) => h.depth === 2);
+const showToc = wordCount > 1500 && toc.length > 2;
 ---
 
 <BlogLayout title={`${post.data.title} — Blog do PicGrade`} description={post.data.description} image={post.data.image}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+
   <article style="padding: 56px 24px 40px;">
     <div style="max-width: var(--measure); margin: 0 auto;">
-      <a href="/blog" class="eyebrow pen-link" style="text-decoration: none; display: inline-block; margin-bottom: 22px;">← Blog</a>
+      <nav aria-label="breadcrumb" class="meta" style="margin-bottom: 22px;">
+        <a href="/" class="pen-link" style="text-decoration: none;">Início</a>
+        <span aria-hidden="true"> / </span>
+        <a href="/blog" class="pen-link" style="text-decoration: none;">Blog</a>
+        <span aria-hidden="true"> / </span>
+        <span>{post.data.category}</span>
+      </nav>
 
+      {post.data.isPillar && <span class="stamp" style="margin-right: 8px;">📘 Guia completo</span>}
       <span class="stamp">{post.data.category}</span>
 
       <h1 style="font-family: var(--font-display); font-weight: 500; font-size: clamp(30px, 5vw, 42px); line-height: 1.1; margin: 18px 0 14px;">
@@ -33,9 +125,32 @@ const readingMinutes = Math.max(1, Math.round(wordCount / 200));
         {dateFmt.format(post.data.date)} · {post.data.author} · {readingMinutes} min de leitura
       </p>
 
+      {pillarPost && (
+        <aside style="border: 1px solid var(--paper-line); border-radius: 8px; padding: 18px 20px; margin: 0 0 36px; background: rgba(0,0,0,0.015);">
+          <p class="eyebrow" style="margin: 0 0 8px;">📘 Guia Completo</p>
+          <p style="margin: 0 0 10px; font-size: 15px;">
+            Este conteúdo faz parte do nosso guia completo sobre <strong>{pillarPost.data.title.split(':')[0]}</strong>.
+            Caso queira aprofundar o assunto, recomendamos a leitura do material completo:
+          </p>
+          <a href={`/blog/${pillarPost.id}`} class="pen-link" style="font-family: var(--font-mono); font-size: 13px; text-decoration: none;">
+            → {pillarPost.data.title}
+          </a>
+        </aside>
+      )}
+
+      {showToc && (
+        <nav aria-label="Índice do artigo" style="border: 1px solid var(--paper-line); border-radius: 8px; padding: 18px 20px; margin: 0 0 36px;">
+          <p class="eyebrow" style="margin: 0 0 10px;">Neste artigo</p>
+          <ol style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.9;">
+            {toc.map((h) => (
+              <li><a href={`#${h.slug}`} class="pen-link" style="text-decoration: none;">{h.text}</a></li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
       <div class="prose">
         <Content />
-      </div>
 
       <script>
         (function(){
@@ -71,7 +186,30 @@ const readingMinutes = Math.max(1, Math.round(wordCount / 200));
       </script>
       </div>
 
-      <hr class="hairline" style="margin: 48px 0 28px;" />
+      {!post.data.isPillar && siblingPosts.length > 0 && (
+        <section style="margin: 40px 0;">
+          <hr class="hairline" style="margin: 0 0 28px;" />
+          <p class="eyebrow" style="margin: 0 0 14px;">Continue aprendendo</p>
+          <ul style="margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.9;">
+            {siblingPosts.map((p) => (
+              <li><a href={`/blog/${p.id}`} class="pen-link" style="text-decoration: none;">{p.data.title}</a></li>
+            ))}
+            {pillarPost && (
+              <li><a href={`/blog/${pillarPost.id}`} class="pen-link" style="text-decoration: none;">📘 {pillarPost.data.title}</a></li>
+            )}
+          </ul>
+        </section>
+      )}
+
+      <aside style="border: 1px solid var(--paper-line); border-radius: 8px; padding: 20px 22px; margin: 8px 0 28px; background: rgba(0,0,0,0.015);">
+        <p style="margin: 0 0 10px; font-size: 15px;">Quer economizar horas na correção de provas?</p>
+        <p class="meta" style="margin: 0 0 14px;">Conheça o PicGrade e descubra como corrigir avaliações objetivas utilizando apenas o celular.</p>
+        <a href="https://picgrade.app" class="pen-link" style="font-family: var(--font-mono); font-size: 13px; text-decoration: none;">
+          → Conhecer o PicGrade
+        </a>
+      </aside>
+
+      <hr class="hairline" style="margin: 0 0 28px;" />
       <a href="/blog" class="pen-link" style="font-family: var(--font-mono); font-size: 13px; text-decoration: none;">← Voltar para o blog</a>
     </div>
   </article>

@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Correção de provas"
 tags: ["avaliação", "gabarito", "provas", "produtividade"]
+pillar: "provas-objetivas"
 draft: false
 ---
 

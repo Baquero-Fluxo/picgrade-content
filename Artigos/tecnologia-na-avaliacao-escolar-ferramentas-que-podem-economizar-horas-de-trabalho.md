@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Tecnologia para professores"
 tags: ["tecnologia educacional", "produtividade docente", "avaliação", "PicGrade"]
+pillar: "avaliacao-escolar"
 draft: false
 ---
 

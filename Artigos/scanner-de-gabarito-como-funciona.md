@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Tecnologia para professores"
 tags: ["scanner de gabarito", "correção automática", "tecnologia educacional", "PicGrade"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

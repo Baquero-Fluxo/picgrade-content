@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Tecnologia para professores"
 tags: ["carga de trabalho docente", "burnout", "produtividade docente", "tecnologia educacional"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 

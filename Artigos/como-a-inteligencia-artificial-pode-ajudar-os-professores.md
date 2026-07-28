@@ -5,6 +5,7 @@ date: 2026-07-25
 author: "Equipe PicGrade"
 category: "Inteligência Artificial na educação"
 tags: ["inteligência artificial", "tecnologia educacional", "professores", "inovação"]
+pillar: "inteligencia-artificial-na-educacao"
 draft: false
 ---
 

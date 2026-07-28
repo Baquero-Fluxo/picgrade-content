@@ -5,6 +5,7 @@ date: 2026-07-24
 author: "Equipe PicGrade"
 category: "Avaliação da aprendizagem"
 tags: ["avaliação", "provas objetivas", "planejamento", "guia completo"]
+pillar: "provas-objetivas"
 draft: false
 ---
 

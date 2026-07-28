@@ -5,6 +5,7 @@ date: 2026-07-25
 author: "Equipe PicGrade"
 category: "Correção de provas"
 tags: ["produtividade", "correção de provas", "professores", "tecnologia educacional"]
+pillar: "correcao-de-provas"
 draft: false
 ---
 
