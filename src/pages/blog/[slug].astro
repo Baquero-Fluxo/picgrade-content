@@ -33,15 +33,25 @@ const siblingPosts = post.data.pillar
 const canonicalURL = new URL(`/blog/${post.id}`, Astro.site).toString();
 const dateISO = post.data.date.toISOString();
 
+// Google exige `item` (URL) em todo nível exceto o último. Não há páginas de
+// categoria, então o nível intermediário é o artigo pilar (quando existe).
+const breadcrumbLevels = [
+  { name: 'Início', item: 'https://picgrade.app' },
+  { name: 'Blog', item: 'https://picgrade.app/blog' },
+  ...(pillarPost
+    ? [{ name: pillarPost.data.title, item: new URL(`/blog/${pillarPost.id}`, Astro.site).toString() }]
+    : []),
+  { name: post.data.title, item: canonicalURL },
+];
+
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://picgrade.app' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://picgrade.app/blog' },
-    { '@type': 'ListItem', position: 3, name: post.data.category },
-    { '@type': 'ListItem', position: 4, name: post.data.title, item: canonicalURL },
-  ],
+  itemListElement: breadcrumbLevels.map((level, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    ...level,
+  })),
 };
 
 const articleSchema = {
